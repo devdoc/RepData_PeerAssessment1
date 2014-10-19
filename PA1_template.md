@@ -40,7 +40,7 @@ data$decimalhours <- decimalhours(data$interval)
 ```r
 # 1. Make a histogram of the total number of steps taken each day
 totalSteps <- tapply(data$steps, data$date, sum)
-hist(totalSteps)
+hist(totalSteps, xlab="Total daily steps", main="Histogram of total daily steps")
 ```
 
 ![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png) 
@@ -75,7 +75,7 @@ plot(intervalsAsDecimalHours, averageAcrossIntervals, type="l", axes=FALSE,
      xlab="Starting time of 5-minute interval",
      ylab="Average step count",
      main="Average step count for 5-minute intervals across all days")
-axis(1, at=seq(0, 24, 1))  # Make tick mark for each hour
+axis(1, at=seq(0, 24, 1))  # Force hourly tick marks on x-axis
 axis(2)
 ```
 
@@ -108,13 +108,18 @@ sum(isNa)  # Count them (sum will regard TRUE as 1, FALSE as 0, giving number of
 ```
 
 ```r
-# 2.-3. Create imputedSteps column with mean steps for corresponding interval taken over all days
+# 2. Devise a strategy for filling in all of the missing values in the dataset.
+#      i) Copy steps data to a new column (imputedSteps)
+#     ii) Replace all missing values with the average step count for the corresponding
+#         interval, taken across all days in the dataset.
+
+# 3. Create imputedSteps column with mean steps for corresponding interval taken over all days
 data$imputedSteps <- data$steps
 data[isNa, "imputedSteps"] <- averageAcrossIntervals[data[isNa, "timestring"]]
 
-# 4. Repeat histogram and mean & median calculation of daily stepcount
+# 4. Repeat histogram and mean & median calculation of daily stepcount after imputing missing values
 totalSteps <- tapply(data$imputedSteps, data$date, sum)  # Calculate total steps for each date
-hist(totalSteps, xlab="Total daily steps")  # Draw a histogram of total steps
+hist(totalSteps, xlab="Total daily steps", main="Histogram of total daily steps")
 ```
 
 ![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
@@ -172,12 +177,12 @@ par(mfcol=c(2, 1))
 plot(intervalsAsDecimalHours, averageAcrossIntervalsWdays, type="l", axes=FALSE, 
      xlab="Starting time of 5-minute interval", ylab="Average step count",
      main="Average step count (weekdays)")
-axis(1, at=seq(0, 24, 1))  # Make tick mark for each hour
+axis(1, at=seq(0, 24, 1))  # Force hourly tick marks on x-axis
 axis(2)
 plot(intervalsAsDecimalHours, averageAcrossIntervalsWends, type="l", axes=FALSE, 
      xlab="Starting time of 5-minute interval", ylab="Average step count",
      main="Average step count (weekends)")
-axis(1, at=seq(0, 24, 1))  # Make tick mark for each hour
+axis(1, at=seq(0, 24, 1))  # Force hourly tick marks on x-axis
 axis(2)
 ```
 
